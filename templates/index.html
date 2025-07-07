@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Transcription Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Video Transcription Tool</h1>
+        
+        <div class="upload-area" id="uploadArea">
+            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <p>Drag & drop video files here or click to browse</p>
+            <input type="file" id="fileInput" multiple accept=".mp4,.avi,.mov,.mkv,.flv,.wmv,.webm" hidden>
+            <button class="browse-btn" onclick="document.getElementById('fileInput').click()">Browse Files</button>
+        </div>
+        
+        <div class="file-list" id="fileList"></div>
+        
+        <button class="transcribe-btn" id="transcribeBtn" style="display: none;">Start Transcription</button>
+        
+        <div class="progress-container" id="progressContainer" style="display: none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p class="progress-text" id="progressText">Processing...</p>
+        </div>
+        
+        <div class="results" id="results"></div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
