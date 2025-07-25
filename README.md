@@ -51,18 +51,16 @@ Edit
 ### 1. Prerequisites
 
 - **Python 3.8+**
-- **FFmpeg** installed and available in your system's PATH
+- **FFmpeg** (must be installed and added to PATH)
+  - Windows: [Download FFmpeg](https://ffmpeg.org/download.html)
+  - macOS: `brew install ffmpeg`
+  - Ubuntu: `sudo apt-get install ffmpeg`
+
+### 2. Installation Steps
 
 ```bash
-# Windows: Add FFmpeg to PATH after downloading from https://ffmpeg.org
-# macOS:   brew install ffmpeg
-# Ubuntu:  sudo apt-get install ffmpeg
-2. Installation Steps
-bash
-Copy
-Edit
 # Clone the repository
-git clone git@github.com:mobius29er/VideoTranscriberPro.git
+git clone https://github.com/mobius29er/VideoTranscriberPro.git
 cd VideoTranscriberPro
 
 # (Recommended) Create a virtual environment
@@ -138,19 +136,18 @@ Edit
 
 📦 Requirements
 ```
-txt
-Copy
-Edit
+--extra-index-url https://download.pytorch.org/whl/nightly/cu128
+
 Flask==3.0.0
 openai-whisper
-torch
+torch==2.9.0.dev20250716+cu128
+torchvision==0.24.0.dev20250717+cu128
+torchaudio==2.8.0.dev20250717+cu128
 werkzeug==3.0.1
 numpy<2
-Install via:
+```
 
-bash
-Copy
-Edit
+```
 pip install -r requirements.txt
 ```
 
