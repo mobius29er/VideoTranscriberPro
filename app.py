@@ -45,7 +45,12 @@ def extract_audio(video_path):
     
     ffmpeg_cmd = None
     for path in ffmpeg_paths:
-        if os.path.exists(path) or path == 'ffmpeg':
+        if path == 'ffmpeg':
+            ffmpeg_in_path = shutil.which('ffmpeg')
+            if ffmpeg_in_path:
+                ffmpeg_cmd = ffmpeg_in_path
+                break
+        elif os.path.exists(path):
             ffmpeg_cmd = path
             break
     
@@ -136,7 +141,16 @@ def transcribe():
                 without_timestamps_path = os.path.join(app.config['OUTPUT_FOLDER'], f"{base_filename}_transcript.txt")
                 with open(without_timestamps_path, 'w', encoding='utf-8') as f:
                     f.write(result['text'].strip())
-                
+
+                # Save SRT file
+                srt_path = os.path.join(app.config['OUTPUT_FOLDER'], f"{base_filename}.srt")
+                with open(srt_path, 'w', encoding='utf-8') as srt_file:
+                    for i, segment in enumerate(result['segments'], start=1):
+                        start_time = format_timestamp_srt(segment['start'])
+                        end_time = format_timestamp_srt(segment['end'])
+                        text = segment['text'].strip()
+                        srt_file.write(f"{i}\n{start_time} --> {end_time}\n{text}\n\n")
+
                 # Clean up temporary files
                 os.remove(video_path)
                 if os.path.exists(audio_path):
