@@ -137,15 +137,28 @@ function displayResults(resultsList) {
         resultItem.className = 'result-item';
         
         if (result.status === 'success') {
+            let downloadLinks = `
+                <a href="/download/${result.with_timestamps}" class="download-btn">Download with timestamps</a>
+                <a href="/download/${result.without_timestamps}" class="download-btn">Download without timestamps</a>
+                <a href="/download/${result.srt_file}" class="download-btn">Download SRT subtitles</a>
+            `;
+            
+            // Add translation links if available
+            if (result.translation) {
+                downloadLinks += `
+                    <a href="/download/${result.translation}" class="download-btn">Download English translation</a>
+                    <a href="/download/${result.translation_srt}" class="download-btn">Download English SRT</a>
+                `;
+            }
+            
             resultItem.innerHTML = `
                 <div class="result-header">
                     <div class="result-filename">${result.filename}</div>
-                    <div class="result-status status-success">Success</div>
+                    <div class="result-status status-success">Success (${result.language})</div>
                 </div>
                 <div class="result-preview">${result.transcript}</div>
                 <div class="download-links">
-                    <a href="/download/${result.with_timestamps}" class="download-btn">Download with timestamps</a>
-                    <a href="/download/${result.without_timestamps}" class="download-btn">Download without timestamps</a>
+                    ${downloadLinks}
                 </div>
             `;
         } else {

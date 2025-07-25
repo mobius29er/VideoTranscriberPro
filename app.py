@@ -7,15 +7,13 @@ from datetime import datetime
 import subprocess
 import tempfile
 import shutil
+import torch
 
-# Add FFmpeg to PATH for this process
-import sys
-ffmpeg_dir = r'C:\ffmpeg-7.1.1-essentials_build\bin'
-if ffmpeg_dir not in os.environ['PATH']:
-    os.environ['PATH'] = ffmpeg_dir + os.pathsep + os.environ['PATH']
+print("CUDA available:", torch.cuda.is_available())
+print("CUDA device name:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else "None")
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = None # removed limit for local running large batches
+app.config['MAX_CONTENT_LENGTH'] =None #500 * 1024 * 1024  500MB max file size
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['OUTPUT_FOLDER'] = 'output'
 
@@ -24,7 +22,9 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
 
 # Load Whisper model (you can change to 'small', 'medium', 'large' for better accuracy)
-model = whisper.load_model("medium")
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+model = whisper.load_model("medium").to(device)
+print("Running Whisper on device:", model.device)
 
 ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mov', 'mkv', 'flv', 'wmv', 'webm'}
 
@@ -45,7 +45,7 @@ def extract_audio(video_path):
     
     ffmpeg_cmd = None
     for path in ffmpeg_paths:
-        if (path != 'ffmpeg' and os.path.exists(path)) or path == 'ffmpeg':
+        if os.path.exists(path) or path == 'ffmpeg':
             ffmpeg_cmd = path
             break
     
@@ -54,10 +54,6 @@ def extract_audio(video_path):
         return None
     
     try:
-    # Use the full path to ffmpeg
-        if os.path.exists(r'C:\ffmpeg-7.1.1-essentials_build\bin\ffmpeg.exe'):
-            ffmpeg_cmd = r'C:\ffmpeg-7.1.1-essentials_build\bin\ffmpeg.exe'
-        
         # Try to run ffmpeg
         result = subprocess.run([
             ffmpeg_cmd, '-i', video_path, '-ab', '160k', '-ac', '2', '-ar', '44100', 
@@ -79,6 +75,15 @@ def format_timestamp(seconds):
     minutes = int((seconds % 3600) // 60)
     seconds = int(seconds % 60)
     return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
+def format_timestamp_srt(seconds):
+    """Convert seconds to SRT format HH:MM:SS,mmm"""
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    secs = seconds % 60
+    whole_seconds = int(secs)
+    milliseconds = int((secs - whole_seconds) * 1000)
+    return f"{hours:02d}:{minutes:02d}:{whole_seconds:02d},{milliseconds:03d}"
 
 @app.route('/')
 def index():
@@ -112,12 +117,8 @@ def transcribe():
                 
                 # Transcribe audio
                 print(f"Transcribing audio for {filename}")
-                result = model.transcribe(
-                    audio_path,
-                    language="en",  # Specify English for better accuracy
-                    fp16=False,     # Use FP32 for CPU compatibility
-                    verbose=True    # Show progress
-                )
+                result = model.transcribe(audio_path)
+                detected_language = result.get('language', 'unknown')
                 
                 # Save transcripts
                 base_filename = os.path.splitext(filename)[0]
@@ -145,8 +146,12 @@ def transcribe():
                     'filename': filename,
                     'status': 'success',
                     'transcript': result['text'][:200] + '...' if len(result['text']) > 200 else result['text'],
+                    'language': detected_language,
                     'with_timestamps': f"{base_filename}_with_timestamps.txt",
-                    'without_timestamps': f"{base_filename}_transcript.txt"
+                    'without_timestamps': f"{base_filename}_transcript.txt",
+                    'srt_file': f"{base_filename}.srt",
+                    'translation': None,
+                    'translation_srt': None
                 })
                 
             except Exception as e:
