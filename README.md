@@ -120,8 +120,6 @@ Translations: Can be enabled if you add a translation module or flag
 🧾 Example Output (with timestamps)
 
 ```
-Copy
-Edit
 [00:00:00 - 00:00:05] Welcome to our demo on AI-powered transcription.
 [00:00:05 - 00:00:10] In this video, we’ll explore how Whisper works.
 ```
