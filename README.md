@@ -148,6 +148,11 @@ numpy<2
 ```
 pip install -r requirements.txt
 ```
+💡 Acknowledgements
+
+Special thanks to PyVideoTrans for their excellent guide on enabling PyTorch Blackwell (RTX 5xxx series) support via CUDA 12.8 Nightly.
+- CUDA 12.8 + Nightly Torch for RTX 5xxx (Blackwell) support
+- Based on guidance from: https://pyvideotrans.com/en/blog/5090s
 
 📌 Notes
 - First-time run will auto-download the Whisper model
