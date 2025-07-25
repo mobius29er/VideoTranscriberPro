@@ -1,5 +1,8 @@
+--extra-index-url https://download.pytorch.org/whl/nightly/cu128
+torch==2.9.0.dev20250716+cu128
+torchvision==0.24.0.dev20250717+cu128
+torchaudio==2.8.0.dev20250717+cu128
 Flask==3.0.0
 openai-whisper
-torch
 werkzeug==3.0.1
 numpy<2

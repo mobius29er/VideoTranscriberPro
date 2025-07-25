@@ -206,6 +206,7 @@ h1 {
 .download-links {
     display: flex;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .download-btn {

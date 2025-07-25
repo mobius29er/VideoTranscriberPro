@@ -1,0 +1,6 @@
+Flask==3.0.0
+openai-whisper
+--extra-index-url https://download.pytorch.org/whl/nightly/cu128
+torch --pre
+werkzeug==3.0.1
+numpy<2
