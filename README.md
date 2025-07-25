@@ -162,7 +162,7 @@ pip install -r requirements.txt
 📣 Future Features (Planned)
 - ✅ Language detection & translation toggle
 - ✅ SRT subtitle preview in browser
-- ⏳ GPU support via PyTorch CUDA if available
+- ✅ GPU support via PyTorch CUDA if available
 - ⏳ User authentication (multi-user support)
 - ⏳ Cloud deployment template (Render, Vercel, Heroku)
 
