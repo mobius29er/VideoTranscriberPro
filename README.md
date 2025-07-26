@@ -179,3 +179,6 @@ This project is licensed under the MIT License.
 👤 Author
 
 Jeremy Foxx
+
+> 🎉 Love this tool? Help support ongoing development: [Sponsor me on GitHub](https://github.com/sponsors/mobius29er)
+
